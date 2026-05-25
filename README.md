@@ -1,5 +1,5 @@
 # Synthetic EHR Cancer Cohort Analysis
-[![Build Status](https://github.com/yifeikang/ehr-cancer-cohort-analysis/actions/workflows/ci.yml/badge.svg)](https://github.com/yifeikang/ehr-cancer-cohort-analysis/actions/workflows/ci.yml)
+[![Build Status](https://github.com/yifeikang/ehr-cancer-cohort-analysis/actions/workflows/main.yml/badge.svg)](https://github.com/yifeikang/ehr-cancer-cohort-analysis/actions/workflows/main.yml)
 
 
 Exploratory analysis of synthetic longitudinal electronic health record (EHR) data to identify and characterize patients with cancer using Python-based healthcare analytics workflows.
