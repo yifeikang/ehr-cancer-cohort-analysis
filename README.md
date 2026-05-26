@@ -1,8 +1,8 @@
 # Synthetic EHR Cancer Cohort Analysis
+
 [![Build Status](https://github.com/yifeikang/ehr-cancer-cohort-analysis/actions/workflows/main.yml/badge.svg)](https://github.com/yifeikang/ehr-cancer-cohort-analysis/actions/workflows/main.yml)
 
-
-Exploratory analysis of synthetic longitudinal electronic health record (EHR) data to identify and characterize patients with cancer using Python-based healthcare analytics workflows.
+Exploratory analysis of synthetic longitudinal electronic health record (EHR) data to identify, validate, and characterize patients with cancer using reproducible Python-based healthcare analytics workflows.
 
 ---
 
@@ -11,24 +11,28 @@ Exploratory analysis of synthetic longitudinal electronic health record (EHR) da
 This project analyzes the Synthea synthetic EHR dataset to:
 
 - Explore longitudinal healthcare data structure
-- Define a rule-based cancer cohort
+- Define and validate a reproducible cancer cohort
 - Characterize patient demographics and healthcare utilization
-- Demonstrate reproducible cohort engineering workflows
-- Discuss limitations and real-world EMR cohort refinement strategies
+- Demonstrate hybrid rule-based cancer phenotyping workflows
+- Evaluate cohort validation strategies using multiple clinical domains
+- Discuss limitations and real-world EMR cohort refinement approaches
+
+Although the dataset is synthetic, the workflow was intentionally designed to reflect challenges commonly encountered in real-world longitudinal EMR systems.
 
 ---
 
 ## Objectives
 
 1. Explore the structure and contents of the Synthea EHR dataset
-2. Identify patients with cancer using diagnosis-based and code-based cohort definitions
+2. Identify patients with cancer using both diagnosis text matching and structured SNOMED CT diagnosis codes
 3. Analyze:
    - demographics
-   - cancer types
+   - cancer subtype distributions
    - age at diagnosis
    - healthcare utilization
    - longitudinal follow-up
-4. Discuss methods for improving cohort specificity in real-world EMR systems
+4. Demonstrate phenotype validation strategies using medications and procedures
+5. Discuss methods for improving cohort specificity in real-world EMR systems
 
 ---
 
@@ -38,7 +42,6 @@ This project analyzes the Synthea synthetic EHR dataset to:
 - pandas
 - numpy
 - matplotlib
-- seaborn
 - Jupyter Notebook
 
 ---
@@ -61,10 +64,8 @@ ehr-cancer-cohort-analysis/
 │   ├── age_at_diagnosis.png
 │   ├── cancer_type_distribution_by_gender.png
 │   ├── encounter_distribution.png
-│   └── validated_age_comparison.png
-│
-├── presentation/
-│   └── synthea_presentation.pptx
+│   ├── cohort_flow_overview.png
+│   └── validation_summary.png
 │
 ├── requirements.txt
 ├── .gitignore
@@ -77,10 +78,11 @@ ehr-cancer-cohort-analysis/
 
 Synthetic EHR data generated using Synthea.
 
-Source:
+Source:  
 https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/BWDKXS
 
 Dataset used:
+
 - `synthea-patient-pop1-csv.zip`
 
 ---
@@ -111,9 +113,24 @@ data/processed/
 
 ## Cohort Definition
 
-Cancer patients were identified using diagnosis terminology from the `CONDITIONS` table.
+Cancer patients were identified from the `CONDITIONS` table using a hybrid cohort extraction strategy combining both structured SNOMED CT diagnosis codes and diagnosis description keyword matching.
 
-Keyword-based filtering included terms such as:
+### Structured-Code Extraction
+
+Code-based extraction used SNOMED CT diagnosis codes representing major malignant neoplasm categories, including:
+
+- lung cancer
+- breast cancer
+- colorectal cancer
+- prostate cancer
+- hematologic malignancies
+- metastatic neoplasms
+
+Broad malignant neoplasm concepts were also included to improve cohort sensitivity.
+
+### Diagnosis Text Matching
+
+Keyword-based filtering of diagnosis descriptions included terms such as:
 
 - cancer
 - malignant
@@ -123,7 +140,38 @@ Keyword-based filtering included terms such as:
 - lymphoma
 - melanoma
 
+Exclusion criteria were applied to reduce false positives, including:
+
+- family history of cancer
+- screening encounters
+- benign neoplasms
+- rule-out diagnoses
+
+The final cancer cohort combined patients identified through both structured-code and text-based methods.
+
 The first qualifying diagnosis date was used as the index cancer diagnosis date.
+
+---
+
+## Cohort Validation
+
+To improve phenotype specificity, additional validation layers were applied using supporting clinical evidence from:
+
+- oncology-related medications
+- cancer-related procedures
+- longitudinal encounter patterns
+
+Procedure-based validation included terms associated with:
+
+- biopsy
+- mastectomy
+- tumor resection
+- radiation therapy
+- oncology encounters
+
+Patients were categorized into phenotype confidence groups based on the consistency of diagnosis, medication, and procedure evidence.
+
+This multi-domain validation strategy was designed to simulate real-world EMR cohort refinement workflows.
 
 ---
 
@@ -136,33 +184,52 @@ The first qualifying diagnosis date was used as the index cancer diagnosis date.
 5. Calculate age at diagnosis and follow-up
 6. Generate descriptive statistics and visualizations
 7. Evaluate healthcare utilization patterns
-8. Discuss limitations and cohort refinement strategies
+8. Apply cohort validation logic
+9. Discuss limitations and cohort refinement strategies
 
 ---
 
 ## Key Analyses
 
 ### Demographics
+
 - Age distribution
 - Sex distribution
 - Race and ethnicity distribution
 
 ### Cancer Cohort Characterization
+
 - Cancer subtype frequency
 - Age at diagnosis
 - Longitudinal follow-up duration
 
 ### Healthcare Utilization
+
 - Encounter frequency
 - Procedures
 - Medications
-- Comorbidity burden
+- Follow-up patterns
+
+### Cohort Validation
+
+- Medication-supported diagnoses
+- Procedure-supported diagnoses
+- Validation overlap analysis
+- Phenotype confidence refinement
+
+---
+
+## Example Output
+
+### Age at Cancer Diagnosis
+
+![Age Distribution](figures/age_at_diagnosis.png)
 
 ---
 
 ## Limitations
 
-This analysis uses synthetic EHR data and a diagnosis-based cohort definition.
+This analysis uses synthetic EHR data and a rule-based cohort definition.
 
 Potential limitations include:
 
@@ -171,6 +238,7 @@ Potential limitations include:
 - Lack of pathology reports
 - Simplified coding structure
 - Absence of unstructured clinical notes
+- Limited temporal clinical context
 
 ---
 
@@ -178,14 +246,28 @@ Potential limitations include:
 
 In a production healthcare environment, cohort validation could be improved using:
 
-- Pathology reports
-- Oncology medications
-- Chemotherapy administration records
-- Tumor registry data
+- pathology reports
+- oncology medications
+- chemotherapy administration records
+- tumor registry data
 - ICD/SNOMED mappings
-- Temporal validation logic
+- temporal validation logic
 - NLP on clinical notes
-- Manual chart review
+- imaging report interpretation
+- manual chart review
+
+---
+
+## Future Improvements
+
+Potential future extensions include:
+
+- NLP-based phenotype extraction
+- temporal sequence validation
+- pathology integration
+- survival analysis
+- OMOP/FHIR standardization
+- scalable Spark-based pipelines
 
 ---
 
@@ -193,11 +275,12 @@ In a production healthcare environment, cohort validation could be improved usin
 
 This project was designed with reproducibility and transparency in mind:
 
-- Notebook-based workflow
-- Modular analysis structure
-- Documented cohort logic
-- Version-controlled code
-- Reusable Python functions
+- notebook-based workflow
+- modular analysis structure
+- documented cohort logic
+- version-controlled code
+- reusable Python functions
+- fully executed notebook outputs
 
 ---
 
