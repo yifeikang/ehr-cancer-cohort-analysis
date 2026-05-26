@@ -1,0 +1,7 @@
+Cohort Stage,Patient Count,Percent of Initial Cohort
+Total Dataset Population,15354,606.2
+Initial Cancer Cohort,2533,100.0
+Medication-Validated Patients,1063,42.0
+Procedure-Validated Patients,1902,75.1
+Final Validated Cancer Cohort,1939,76.5
+Excluded After Validation,594,23.5
