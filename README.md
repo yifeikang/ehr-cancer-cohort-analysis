@@ -4,6 +4,7 @@
 
 Exploratory analysis of synthetic longitudinal electronic health record (EHR) data to identify, validate, and characterize patients with cancer using reproducible Python-based healthcare analytics workflows.
 
+![Flow Diagram](figures/flow.png)
 ---
 
 ## Project Overview
